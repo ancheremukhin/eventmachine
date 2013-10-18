@@ -356,7 +356,7 @@ t_get_peer_cert_chain
 
 static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
 {
-	VALUE ret = Qnil;
+	VALUE ret = rb_ary_new();
 
 	#ifdef WITH_SSL
 	STACK_OF(X509) *chain = NULL;
@@ -366,7 +366,6 @@ static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
 	int num;
 
 	chain = evma_get_peer_cert_chain (NUM2ULONG (signature));
-
 	if (chain != NULL) {
 	    num = sk_X509_num(chain);
 	    for(int i = 0; i < num; ++i) {
@@ -374,11 +373,7 @@ static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
             out = BIO_new(BIO_s_mem());
             PEM_write_bio_X509(out, cert);
             BIO_get_mem_ptr(out, &buf);
-            if(NIL_P(ret)) {
-                ret = rb_str_new(buf->data, buf->length);
-            } else {
-                ret = rb_str_cat(ret, buf->data, buf->length);
-            }
+            rb_ary_push(ret, rb_str_new(buf->data, buf->length));
             X509_free(cert);
             BIO_free(out);
         }
