@@ -374,7 +374,6 @@ static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
             PEM_write_bio_X509(out, cert);
             BIO_get_mem_ptr(out, &buf);
             rb_ary_push(ret, rb_str_new(buf->data, buf->length));
-            X509_free(cert);
             BIO_free(out);
         }
         sk_X509_pop_free(chain, X509_free);
