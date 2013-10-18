@@ -350,6 +350,45 @@ static VALUE t_get_peer_cert (VALUE self, VALUE signature)
 	return ret;
 }
 
+/***************
+t_get_peer_cert_chain
+***************/
+
+static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
+{
+	VALUE ret = Qnil;
+
+	#ifdef WITH_SSL
+	STACK_OF(X509) *chain = NULL;
+	X509 *cert = NULL;
+	BUF_MEM *buf;
+	BIO *out;
+	int num;
+
+	chain = evma_get_peer_cert_chain (NUM2ULONG (signature));
+
+	if (chain != NULL) {
+	    num = sk_X509_num(chain);
+	    for(int i = 0; i < num; ++i) {
+	        cert = sk_X509_value(chain, i);
+            out = BIO_new(BIO_s_mem());
+            PEM_write_bio_X509(out, cert);
+            BIO_get_mem_ptr(out, &buf);
+            if(NIL_P(ret)) {
+                ret = rb_str_new(buf->data, buf->length);
+            } else {
+                ret = rb_str_cat(ret, buf->data, buf->length);
+            }
+            X509_free(cert);
+            BIO_free(out);
+        }
+        sk_X509_pop_free(chain, X509_free);
+	}
+	#endif
+
+	return ret;
+}
+
 /**************
 t_get_peername
 **************/
@@ -1227,6 +1266,7 @@ extern "C" void Init_rubyeventmachine()
 	rb_define_module_function (EmModule, "set_tls_parms", (VALUE(*)(...))t_set_tls_parms, 4);
 	rb_define_module_function (EmModule, "start_tls", (VALUE(*)(...))t_start_tls, 1);
 	rb_define_module_function (EmModule, "get_peer_cert", (VALUE(*)(...))t_get_peer_cert, 1);
+	rb_define_module_function (EmModule, "get_peer_cert_chain", (VALUE(*)(...))t_get_peer_cert_chain, 1);
 	rb_define_module_function (EmModule, "send_data", (VALUE(*)(...))t_send_data, 3);
 	rb_define_module_function (EmModule, "send_datagram", (VALUE(*)(...))t_send_datagram, 5);
 	rb_define_module_function (EmModule, "close_connection", (VALUE(*)(...))t_close_connection, 2);

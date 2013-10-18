@@ -1186,6 +1186,19 @@ X509 *ConnectionDescriptor::GetPeerCert()
 }
 #endif
 
+/*********************************
+ConnectionDescriptor::GetPeerCertChain
+*********************************/
+
+#ifdef WITH_SSL
+STACK_OF(X509) *ConnectionDescriptor::GetPeerCertChain()
+{
+	if (!SslBox)
+		throw std::runtime_error ("SSL/TLS not running on this connection");
+	return SslBox->GetPeerCertChain();
+}
+#endif
+
 
 /***********************************
 ConnectionDescriptor::VerifySslPeer

@@ -70,6 +70,8 @@ class SslBox_t
 
 		X509 *GetPeerCert();
 
+		STACK_OF(X509) *GetPeerCertChain();
+
 		void Shutdown();
 
 	protected:

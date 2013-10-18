@@ -466,6 +466,21 @@ extern "C" X509 *evma_get_peer_cert (const unsigned long binding)
 }
 #endif
 
+/******************
+evma_get_peer_cert_chain
+******************/
+
+#ifdef WITH_SSL
+extern "C" STACK_OF(X509) *evma_get_peer_cert_chain (const unsigned long binding)
+{
+	ensure_eventmachine("evma_get_peer_cert_chain");
+	EventableDescriptor *ed = dynamic_cast <EventableDescriptor*> (Bindable_t::GetObject (binding));
+	if (ed)
+		return ed->GetPeerCertChain();
+	return NULL;
+}
+#endif
+
 /********************
 evma_accept_ssl_peer
 ********************/

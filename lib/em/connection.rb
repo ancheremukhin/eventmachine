@@ -488,6 +488,10 @@ module EventMachine
       EventMachine::get_peer_cert @signature
     end
 
+    def get_peer_cert_chain
+      EventMachine::get_peer_cert_chain @signature
+    end
+
 
     # Sends UDP messages.
     #

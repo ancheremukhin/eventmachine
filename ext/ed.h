@@ -73,6 +73,7 @@ class EventableDescriptor: public Bindable_t
 
 		#ifdef WITH_SSL
 		virtual X509 *GetPeerCert() {return NULL;}
+		virtual STACK_OF(X509) *GetPeerCertChain() {return NULL;}
 		#endif
 
 		virtual uint64_t GetCommInactivityTimeout() {return 0;}
@@ -197,6 +198,7 @@ class ConnectionDescriptor: public EventableDescriptor
 
 		#ifdef WITH_SSL
 		virtual X509 *GetPeerCert();
+		virtual STACK_OF(X509) *GetPeerCertChain();
 		virtual bool VerifySslPeer(const char*);
 		virtual void AcceptSslPeer();
 		#endif

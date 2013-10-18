@@ -434,6 +434,19 @@ X509 *SslBox_t::GetPeerCert()
 	return cert;
 }
 
+/**********************
+SslBox_t::GetPeerCertChain
+**********************/
+
+STACK_OF(X509) *SslBox_t::GetPeerCertChain()
+{
+    STACK_OF(X509) *chain = NULL;
+
+    if (pSSL)
+        chain = SSL_get_peer_cert_chain(pSSL);
+
+    return chain;
+}
 
 /******************
 ssl_verify_wrapper
