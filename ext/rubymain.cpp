@@ -376,7 +376,6 @@ static VALUE t_get_peer_cert_chain (VALUE self, VALUE signature)
             rb_ary_push(ret, rb_str_new(buf->data, buf->length));
             BIO_free(out);
         }
-        sk_X509_pop_free(chain, X509_free);
 	}
 	#endif
 
